@@ -1,156 +1,47 @@
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "deadline-cloud-for-keyshot"
-description = "AWS Deadline Cloud for KeyShot"
-authors = [
-  {name = "Amazon Web Services"},
-]
-dynamic = ["version"]
+version = "0.99.0"
+description = "DEPRECATED PyPI package. AWS Deadline Cloud for KeyShot is now delivered by the shared Deadline Cloud submitter installer; no separate adaptor package is needed."
 readme = "README.md"
+requires-python = ">=3.9"
 license = "Apache-2.0"
-requires-python = ">=3.11"
-# https://pypi.org/classifiers/
+license-files = ["LICENSE", "NOTICE"]
+authors = [{ name = "Amazon Web Services" }]
+keywords = ["deadline-cloud", "deprecated"]
 classifiers = [
-  "Development Status :: 5 - Production/Stable",
-  "Programming Language :: Python",
-  "Programming Language :: Python :: 3 :: Only",
-  "Programming Language :: Python :: 3.11",
-  "Programming Language :: Python :: 3.12",
-  "Operating System :: Microsoft :: Windows",
-  "Operating System :: MacOS",
-  "License :: OSI Approved :: Apache Software License",
-  "Intended Audience :: Developers",
-  "Intended Audience :: End Users/Desktop"
-]
-
-dependencies = [
-  "boto3",
+    "Development Status :: 7 - Inactive",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop",
+    "Operating System :: MacOS",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
 ]
 
 [project.urls]
-Homepage = "https://github.com/aws-deadline/deadline-cloud-for-keyshot"
-Source = "https://github.com/aws-deadline/deadline-cloud-for-keyshot"
+Documentation = "https://docs.aws.amazon.com/deadline-cloud/latest/userguide/submitter.html"
+
+[project.scripts]
+KeyShotAdaptor = "deadline.keyshot_adaptor._cli:main"
+keyshot-openjd = "deadline.keyshot_adaptor._cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src"]
+packages = ["src/deadline"]
 
-[tool.hatch.version]
-source = "vcs"
-
-[tool.hatch.version.raw-options]
-version_scheme = "post-release"
-
-[tool.hatch.envs.default]
-dependencies = [
-  "mypy",
-  "types-all"
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/deadline",
+    "LICENSE",
+    "NOTICE",
+    "README.md",
+    "pyproject.toml",
 ]
-
-[tool.hatch.envs.default.scripts]
-typecheck = "mypy src/ --strict"
-
-[tool.mypy]
-check_untyped_defs = true
-disallow_untyped_defs = true
-disallow_incomplete_defs = true
-disallow_untyped_calls = false
-warn_return_any = true
-show_error_codes = true
-pretty = true
-# Tell mypy that there's a namspace package src/deadline
-namespace_packages = true
-explicit_package_bases = true
-mypy_path = "src"
-
-[[tool.mypy.overrides]]
-module = ["lux.*", "qtpy.*"]
-ignore_missing_imports = true
-
-[tool.ruff]
-line-length = 100
-
-[tool.ruff.lint]
-ignore = ["E501"]
-
-[tool.ruff.lint.isort]
-known-first-party = [
-  "deadline",
-  "openjd"
-]
-
-[tool.black]
-line-length = 100
-
-[tool.pytest.ini_options]
-xfail_strict = true
-addopts = [
-    "--durations=5",
-    "--color=yes",
-    "--cov=src/"
-]
-testpaths = [ "test/unit" ]
-looponfailroots = [
-    "src",
-    "test",
-]
-# looponfailroots is deprecated, this removes the deprecation from the test output
-filterwarnings = [
-    "ignore::DeprecationWarning"
-]
-
-[tool.coverage.run]
-source_pkgs = [ "deadline/keyshot_submitter", "deadline/keyshot_adaptor"]
-branch = true
-parallel = true
-omit = [ "**/__main__.py", "**/_version.py" ]
-
-[tool.coverage.paths]
-source =  [
-    "src/"
-]
-
-[tool.coverage.report]
-show_missing = true
-fail_under = 18
-
-[tool.semantic_release]
-# Can be removed or set to true once we are v1
-major_on_zero = false
-tag_format = "{version}"
-
-[tool.semantic_release.commit_parser_options]
-allowed_tags = [
-    "build",
-    "chore",
-    "ci",
-    "docs",
-    "feat",
-    "fix",
-    "perf",
-    "style",
-    "refactor",
-    "test",
-]
-minor_tags = []
-patch_tags = [
-  "chore",
-  "feat",
-  "fix",
-  "refactor",
-]
-
-[tool.semantic_release.publish]
-upload_to_vcs_release = false
-
-[tool.semantic_release.changelog]
-template_dir = ".semantic_release"
-
-[tool.semantic_release.changelog.environment]
-trim_blocks = true
-lstrip_blocks = true
-
-[tool.semantic_release.branches.release]
-match = "(mainline|release|patch_.*)"
